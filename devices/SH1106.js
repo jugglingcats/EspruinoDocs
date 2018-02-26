@@ -105,22 +105,33 @@ exports.connectSPI = function(spi, dc,  rst, callback, options) {
     }, 50);
     
     // write to the screen
-    oled.flip = function() { 
-        //  chip only has page mode
+//    oled.flip = function() { 
+//        //  chip only has page mode
+//        var page = 0xB0;
+//        var chunk = new Uint8Array(C.OLED_WIDTH);
+//        if (cs) digitalWrite(cs,0);
+//        for (var p=0; p<(C.OLED_WIDTH * initCmds[4] / 8); p+=C.OLED_WIDTH) {
+//            digitalWrite(dc,0); // command
+//            spi.write([page, 0x02, 0x10]);// display is centred in RAM
+//            page++;
+//            digitalWrite(dc,1);// data
+//            chunk.set(new Uint8Array(this.buffer,p,C.OLED_WIDTH), 0);
+//            spi.write(chunk);
+//        }
+//        if (cs) digitalWrite(cs,1);
+//    };
+    
+	oled.flip = function() { 
         var page = 0xB0;
-        var chunk = new Uint8Array(C.OLED_WIDTH);
         if (cs) digitalWrite(cs,0);
-        for (var p=0; p<(C.OLED_WIDTH * initCmds[4] / 8); p+=C.OLED_WIDTH) {
-            digitalWrite(dc,0); // command
-            spi.write([page, 0x02, 0x10]);// display is centred in RAM
-            page++;
-            digitalWrite(dc,1);// data
-            chunk.set(new Uint8Array(this.buffer,p,C.OLED_WIDTH), 0);
-            spi.write(chunk);
+        var l = (C.OLED_WIDTH * initCmds[4] / 8);
+        for (var p=0; p<l; p+=C.OLED_WIDTH) {
+            spi.write([page++, 0x02, 0x10],dc);// display is centred in RAM
+            spi.write(new Uint8Array(this.buffer,p,C.OLED_WIDTH));­
         }
         if (cs) digitalWrite(cs,1);
     };
-    
+	
 	// set contrast, 0..255
 	oled.setContrast = function(c) { 
 		if (cs) cs.reset();
