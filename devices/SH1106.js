@@ -127,7 +127,7 @@ exports.connectSPI = function(spi, dc,  rst, callback, options) {
         var l = (C.OLED_WIDTH * initCmds[4] / 8);
         for (var p=0; p<l; p+=C.OLED_WIDTH) {
             spi.write([page++, 0x02, 0x10],dc);// display is centred in RAM
-            spi.write(new Uint8Array(this.buffer,p,C.OLED_WIDTH));­
+            spi.write(new Uint8Array(this.buffer,p,C.OLED_WIDTH));
         }
         if (cs) digitalWrite(cs,1);
     };
